@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Viewport Check</title>
+	<style>
+		*{
+			padding: 0;
+			margin: 0;
+			color: #fff;
+			font-size: 16px;
+		}
+		.container{
+			height: 100vh;
+			width: 100%;
+			font-size: 3em;
+		}
+		.c_1{
+			background-color: #3061af;
+		}
+		.c_2{
+			background-color: #333346;
+		}
+		.c_3{
+			background-color: #af7d30;
+		}
+		.c_4{
+			background-color: #30af5e;
+		}
+	</style>
+</head>
+<body>
+	<div class="container c_1" data-animate="slide-left">01</div>
+	<div class="container c_2" data-animate="slide-left">02</div>
+	<div class="container c_3" data-animate="slide-left">03</div>
+	<div class="container c_4" data-animate="slide-left">04</div>
+</body>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script>
+	var sarniel = {
+		global: function() {
+		},
+		isScrolledIntoView: function () {
+	        var getAvailableSections = function () {
+	            var visible_sections = [];
+	            var identifier = $('[data-animate]');
+	            $(identifier).each(function() {
+	                var element = $(this);
+	                var position = element[0].getBoundingClientRect();
+	                var loaded = element.data('loaded');
+	                
+	                // checking whether fully visible
+	                if(Boolean(loaded) === false && position.top >= 0 && position.bottom <= window.innerHeight) {
+	                    visible_sections.push(element);
+	                }
+	                // checking for partial visibility
+	                if(Boolean(loaded) === false && position.top < window.innerHeight && position.bottom >= 0) {
+	                    visible_sections.push(element);
+	                }
+
+	            });
+	            return visible_sections;
+	        };
+
+	        var setSectionAvailable = function () {
+	            var visible_sections = getAvailableSections();
+	            $.each(visible_sections, function () {
+	                var animateName = $(this).attr('data-animate');
+	                $(this).addClass(animateName);
+	                $(this).data('loaded', true);
+	            });
+	        };
+	        
+	        setSectionAvailable();
+	        $(window).off('scroll.for_images').on('scroll.for_images', function () {
+	            setSectionAvailable();
+	        });
+		}
+	}
+	$(function($){
+		sarniel.isScrolledIntoView();
+	});
+</script>
+
+</html>
